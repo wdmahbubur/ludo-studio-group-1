@@ -1,0 +1,17 @@
+{
+  "name": "ludo-studio-group-1",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CSE444.5 Group 1 Project 7 - interactive 3D Ludo game built with Three.js.",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "test": "node --test tests/rules.test.mjs",
+    "check": "node scripts/check.mjs",
+    "build": "node scripts/build.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
