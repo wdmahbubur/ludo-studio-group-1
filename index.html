@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f9fc">
+  <meta name="description" content="Ludo Studio — an interactive Three.js project for CSE444.5, Group 1, Project 7.">
+  <title>Ludo Studio · Group 1 · CSE444</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Ludo Studio home"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>Ludo<span class="brand-light"> studio</span><small>A LITTLE PLAY. A NEW PERSPECTIVE.</small></span></a>
+    <div class="header-actions"><span class="course-tag">CSE444.5 <span>/</span> GROUP 01</span><button class="button quiet" id="help-button"><span class="question-mark">?</span> Project guide</button></div>
+  </header>
+  <section class="intro">
+    <div><div class="eyebrow">COMPUTER GRAPHICS & ANIMATION LAB <span class="tiny-rule"></span> PROJECT 07</div><h1>A classic game. <em>A different dimension.</em></h1></div>
+    <p>Four colors. One way home.<br>A familiar favorite, reimagined in 3D.</p>
+  </section>
+  <main class="workspace">
+    <section class="scene-card" aria-label="Interactive game scene">
+      <div class="viewport" id="viewport">
+        <div class="scene-header"><div><div class="scene-label"><span class="live-dot"></span> LIVE SCENE</div><span class="scene-subtitle">Drag to explore. Click the board to restyle.</span></div>
+          <div class="view-tools" role="group" aria-label="Camera views"><button class="icon-button" id="perspective-button" title="Perspective view (R)" aria-label="Reset perspective view"><svg viewBox="0 0 24 24"><path d="m12 3 9 5v8l-9 5-9-5V8l9-5Zm0 9 9-4M12 12 3 8m9 4v9"/></svg></button><button class="icon-button" id="top-button" title="Top view (V)" aria-label="Top perspective view"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg></button><button class="icon-button" id="orbit-button" aria-pressed="false" title="Auto-orbit camera" aria-label="Toggle automatic camera orbit"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="5"/><path d="m17 4 3 4-4 1"/><circle cx="12" cy="12" r="2"/></svg></button></div>
+        </div>
+        <div class="demo-banner" id="demo-banner" hidden>DEMONSTRATION SCENE <span>Normal game is kept separate.</span></div>
+        <div class="scene-loading" id="scene-loading"><span class="loader"></span><h2>Setting the table…</h2><p id="loading-message">Loading the pinned Three.js 3D engine.</p></div>
+        <div class="scene-hint"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> orbit</span><span class="hint-divider"></span><span>Scroll to zoom</span><span class="hint-divider"></span><span><kbd>Space</kbd> roll</span></div>
+        <div class="scene-status"><span id="fps" hidden>—</span> GLSL ACTIVE <span>·</span> PERSPECTIVE</div>
+      </div>
+      <div class="board-finishes">
+        <div class="finish-heading"><div class="eyebrow">MAKE IT YOURS</div><h2>Board finish</h2><p id="finish-note">Soft color · glazed ceramic</p></div>
+        <div class="theme-options" role="group" aria-label="Board texture">
+          <button class="theme-option selected" data-theme="0" aria-pressed="true"><span class="swatch porcelain"><i></i><i></i><i></i><i></i></span><span>Porcelain</span><b>01</b></button>
+          <button class="theme-option" data-theme="1" aria-pressed="false"><span class="swatch midnight"><i></i><i></i><i></i><i></i></span><span>Midnight</span><b>02</b></button>
+          <button class="theme-option" data-theme="2" aria-pressed="false"><span class="swatch walnut"><i></i><i></i><i></i><i></i></span><span>Walnut</span><b>03</b></button>
+        </div>
+      </div>
+    </section>
+    <aside class="sidebar" aria-label="Game controls">
+      <section class="turn-card" id="turn-card">
+        <div class="section-top"><span class="eyebrow">LET'S PLAY</span><span class="mode-badge" id="mode-badge">4 PLAYERS · LOCAL</span></div>
+        <div class="current-turn"><span class="turn-avatar" id="turn-avatar">R</span><div><p class="muted" id="turn-caption">ON THE MOVE</p><h2 id="turn-title">Red's turn</h2></div><span class="die-face" id="die-readout" aria-label="No die result yet">—</span></div>
+        <p class="game-message" id="game-message" role="status" aria-live="polite">Roll a six to leave the yard.</p>
+        <div class="token-choices" id="token-choices" aria-label="Choose a token to move" hidden></div>
+        <button class="roll-button" id="roll-button"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="8" cy="8" r="1"/><circle cx="16" cy="16" r="1"/><circle cx="12" cy="12" r="1"/></svg><span id="roll-label">Roll the dice</span><kbd>Space</kbd></button>
+        <div class="demo-roll-control" id="demo-roll-control" hidden><label for="demo-dice">Demo roll</label><select id="demo-dice"><option value="6">6 — leave / capture</option><option value="3">3 — finish token 4</option><option value="1">1</option><option value="2">2</option><option value="4">4</option><option value="5">5</option><option value="0">Random</option></select></div>
+      </section>
+      <section class="players-card">
+        <div class="section-top"><h2>Around the board</h2><button class="text-button" id="new-game-button">New game ↗</button></div>
+        <div class="players-list" id="players-list"></div>
+        <div class="players-foot"><span>First to bring all four home wins.</span><span id="roll-count">0 rolls</span></div>
+      </section>
+      <section class="scene-settings">
+        <div class="section-top"><h2>Set the scene</h2><span class="small-tag">GRAPHICS LAB</span></div>
+        <div class="light-setting"><label for="light-intensity">Lighting intensity</label><output id="light-value" for="light-intensity">100%</output></div>
+        <input type="range" id="light-intensity" min="25" max="180" value="100" aria-label="Light intensity">
+        <div class="toggle-row"><label for="orbit-light">Orbit the light <span>Moving light & shadows</span></label><input id="orbit-light" type="checkbox" class="switch"></div>
+        <div class="toggle-row"><label for="demo-toggle">Presentation demo <span>Explore moves without changing your game</span></label><input id="demo-toggle" type="checkbox" class="switch"></div>
+      </section>
+    </aside>
+  </main>
+  <footer class="footer"><span><span class="live-dot"></span> Built with Three.js <span class="footer-divider">/</span> Made for CSE444.5</span><div><span>Custom GLSL</span><span>Textured 3D objects</span><span>Keyboard + mouse</span></div><span class="project-number">G01 / P07</span></footer>
+  <section class="activity" aria-label="Recent game activity"><button id="activity-toggle" class="text-button" aria-expanded="false">Recent moves <span>⌄</span></button><ol id="activity-list" hidden></ol></section>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+<dialog id="help-dialog" class="help-dialog">
+  <div class="dialog-header"><div><div class="eyebrow">GROUP 01 · PROJECT 07</div><h2>The project, explained.</h2></div><button class="icon-button close-dialog" aria-label="Close guide">×</button></div>
+  <div class="help-content">
+    <p><strong>A ludo game</strong> — CSE444.5 Computer Graphics and Animation Lab. Submission date in the supplied workbook: <strong>Friday, 25 September 2026</strong>.</p>
+    <h3>Every required interaction</h3>
+    <div class="controls-grid"><span><kbd>W</kbd> <kbd>S</kbd> / <kbd>↑</kbd> <kbd>↓</kbd></span><p>Tilt the perspective camera.</p><span><kbd>A</kbd> <kbd>D</kbd> / <kbd>←</kbd> <kbd>→</kbd></span><p>Orbit left and right around the board.</p><span><kbd>Q</kbd> <kbd>E</kbd> / scroll</span><p>Zoom in and out.</p><span>Mouse drag</span><p>Orbit freely; a drag is not treated as a click.</p><span>Click board / <kbd>T</kbd></span><p>Change the board's actual texture, with a shader cross-fade.</p><span>Click die / <kbd>Space</kbd></span><p>Roll and rotate the three-dimensional die.</p><span>Click token / <kbd>1</kbd>–<kbd>4</kbd></span><p>Select a legal highlighted token.</p><span><kbd>R</kbd> / <kbd>V</kbd> / <kbd>L</kbd></span><p>Reset view / top perspective view / moving light.</p></div>
+    <h3>Our local game variant</h3><p>A six releases a token and grants another roll. Three consecutive sixes forfeit the third roll; earlier moves remain. Stars and colored start squares are safe. Landing on an opponent on another shared square sends that token to its yard. Stacks do not form blockades; all opposing tokens on an unsafe destination are captured. An exact roll is needed to finish. Captures and finishing do not grant extra rolls. Two-player mode uses Red and Yellow.</p>
+    <h3>Graphics you can point to</h3><p>The board uses authored vertex and fragment shaders, texture sampling, Lambert diffuse lighting, a Blinn–Phong varnish highlight, shadow sampling, a time-based turn pulse, and texture blending. Every rendered mesh and sprite has a procedural canvas texture. The scene uses a perspective camera, hemispheric/ambient/directional lighting, soft shadows, and time-based animations.</p>
+    <h3>Presentation demo</h3><p>Switch on the separate demo scene. Choose <strong>6</strong> and move <strong>Red token 2</strong> to demonstrate a capture. Start the demo again, choose <strong>3</strong>, and move <strong>Red token 4</strong> to demonstrate exact finishing. Leaving the demo restores your normal game.</p>
+    <h3>Group 1</h3><p>Abu Sayed<br>Md Mahbubur Rahman<br>Khaleda Akhter Sumi</p>
+    <div class="integrity-note"><strong>Course policy.</strong> The supplied instructions prohibit plagiarism, copying, or collecting project material. This is an AI-assisted learning implementation. Confirm that this assistance is permitted, disclose it where required, and understand and adapt the code rather than presenting it as unaided work.</div>
+  </div>
+</dialog>
+<dialog id="new-game-dialog" class="new-game-dialog"><div class="dialog-header"><div><div class="eyebrow">A FRESH START</div><h2>Set your table.</h2></div><button class="icon-button close-dialog" aria-label="Cancel new game">×</button></div><p>This replaces the current game. Choose the number of local players sharing this device.</p><fieldset><legend>Players</legend><label><input name="player-count" type="radio" value="4" checked> Four players <span>Red · Green · Yellow · Blue</span></label><label><input name="player-count" type="radio" value="2"> Two players <span>Red · Yellow</span></label></fieldset><button class="roll-button" id="confirm-new-game">Start a new game</button></dialog>
+<noscript><p class="no-script">Enable JavaScript to run this Three.js project.</p></noscript>
+<script>if(location.protocol==='file:'){document.getElementById('loading-message').textContent='Open this project using npm start or a local web server—not by double-clicking index.html.';}</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.140.2/build/three.min.js"></script>
+<script type="module" src="./src/main.js"></script>
+</body></html>
